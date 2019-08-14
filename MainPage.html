@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- CDN for Bootstrap & Jquery-------->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- CDn for axios ----------->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .wrapper{
+            width: 100%;
+        }
+        .header{
+            width: 100%;
+            height: auto;
+        }
+        p, div{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--  Header ----------------->
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="header jumbotron">
+                        <h1 class="text-center text-primary">Random User Details</h1>
+                        <button id="logOutButton" class="btn btn-primary float-right">Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+
+    <!-- Main Section------------->
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div id="myContainer">
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!------------------ Javascript ------------------->
+    <script>
+        //---------------------------------------------------------------  
+        // data var will contain all data fetched from the url  
+        var data;
+
+        function getInformation(){
+            var promise = axios.get("https://randomuser.me/api/?results=10");
+            console.log("promise",promise);
+            promise.then(value => {
+                ///console.log("inside then",value.data);
+                data = value.data.results;
+                //console.log(data);
+                createDiv(data);
+            }).catch(error => alert(error));
+        }
+        
+        getInformation();
+        /** -------------------------------------------------------
+            Functin to create a div to represent details of a person
+        */
+        function createDiv(data){
+            data.forEach(person => {
+                p = `<div class='jumbotron bg-light text-dark' style='margin:20px;'>
+                    <img src="${person.picture.large}" class="img-thumbnail d-bock">
+                    
+                    <div style="display:inline-block; float:right; width:40%;">
+                        <p style='text-transform:capitalize;'>Name : <span>${person.name.title}</span>. <span>${person.name.first}</span> <span>${person.name.last}</span></p>
+                        <p class='text-primary'>Email : <span>${person.email}</span></p>
+                        <p>Phone : <span>${person.phone}</span></p>
+                        <p class='text-info'><span class='text-primary';><u>Address</u></span> : <span>${person.location.street}</span>, <span>${person.location.city}</span>, <span>${person.location.state}</span></p>
+                        <p>Age : <span>${person.dob.age}</span></p>
+                    </div>
+
+
+                    <!----------- Model Starts here ------>
+                    <div class="container">
+                    <!-- Trigger the modal with a button -->
+                    <button type="button" class="btn btn-secondary" style="padding:2px; float:right; clear:both;" data-toggle="modal" data-target="#myModal">Know More</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+                        
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Details of an user inside model body -->
+                            <div class="modal-body">
+                            <p></p>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                    </div>
+                    <!------------ Modal End -------------->
+                
+                </div>
+                `;
+                $('#myContainer').append(p);
+            });
+
+            /** Infinite Scroll using JS----------------- *//*
+            var p1 = window;
+            window.addEventListener('scroll', function(){
+                console.log("inside function");
+                if (window.scrollTop + windo.hei >= p1.scrollHeight) {
+                    getInformation();
+                }
+            });*/
+
+            
+        }
+        //Infinite Scroll using Jquery
+        $(window).scroll(function() {
+            if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                getInformation();
+            }
+            });
+
+        //Logout button 
+        document.getElementById('logOutButton').onclick = function(){
+            location.href = "Login.html";
+        }
+        
+        
+    </script>
+</body>
+</html>
